@@ -1,0 +1,25 @@
+<?php
+
+namespace {{ namespace }};
+
+use CubeAgency\FilamentConstructor\Constructor\Blocks\BlockRenderer;
+
+class {{ class }} extends BlockRenderer
+{
+    public function name(): string
+    {
+        return '{{ block_name }}';
+    }
+
+    public function title(): string
+    {
+        return __('{{ translation }}');
+    }
+
+    public function schema(): array
+    {
+        return [
+            //
+        ];
+    }
+}
