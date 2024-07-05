@@ -108,6 +108,45 @@ public static function form(Form $form): Form
 }
 ```
 
+## Options
+Constructor blocks has some of the options from Builder\Blocks.
+1. To add label
+```php
+    public function title(): string
+    {
+        return __('Text block');
+    }
+```
+
+2.  To add icon
+ ```php
+   public function icon(): string
+    {
+        return 'heroicon-o-chat-bubble-left-right';
+    }
+```
+3. To add maxItems
+ ```php
+   public function maxItems(): int
+    {
+        return 1;
+    }
+```
+4. To add columns
+ ```php
+   public function columns(): int
+    {
+        return 6;
+    }
+```
+
+To add Builder options to the constructor, add them when defining the constructor field in your page template. For example:
+```php
+   Constructor::make('blocks')
+    ->collapsible()
+    ->collapsed()
+```
+
 ## Testing
 
 ```bash
