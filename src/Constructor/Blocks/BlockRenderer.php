@@ -19,4 +19,19 @@ abstract class BlockRenderer implements BlockRendererInterface
     {
         return $this->view($block)->render();
     }
+
+    public function maxItems(): ?int
+    {
+        return null;
+    }
+
+    public function columns(): ?int
+    {
+        return null;
+    }
+
+    public function icon(): ?string
+    {
+        return null;
+    }
 }

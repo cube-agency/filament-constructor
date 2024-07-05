@@ -8,6 +8,12 @@ interface BlockRendererInterface
 
     public function name(): string;
 
+    public function icon(): ?string;
+
+    public function maxItems(): ?int;
+
+    public function columns(): ?int;
+
     public function schema(): array;
 
     public function html(object $block): string;
