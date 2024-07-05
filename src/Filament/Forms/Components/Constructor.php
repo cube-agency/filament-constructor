@@ -32,11 +32,29 @@ class Constructor extends Builder
              * @var BlockRenderer $blockRenderer
              */
             $blockRenderer = resolve($block);
-            $blockFields[] = Builder\Block::make($blockRenderer->name())
+            $block = Builder\Block::make($blockRenderer->name())
                 ->label($blockRenderer->title())
                 ->schema($blockRenderer->schema());
+
+            $icon = $blockRenderer->icon();
+            if ($icon) {
+                $block->icon($icon);
+            }
+
+            $limit = $blockRenderer->maxItems();
+            if ($limit) {
+                $block->maxItems($limit);
+            }
+
+            $columns = $blockRenderer->columns();
+            if ($columns) {
+                $block->columns($columns);
+            }
+
+            $blockFields[] = $block;
         }
 
         $this->blocks($blockFields);
+        $this->blockIcons();
     }
 }
