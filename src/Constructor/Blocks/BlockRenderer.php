@@ -10,7 +10,11 @@ abstract class BlockRenderer implements BlockRendererInterface
     public function view(object $block, array $additionalData = []): View
     {
         $viewName = Str::kebab(Str::studly($this->name()));
-        $data = (array)$block->data + $additionalData + ['block' => $block];
+        $data = array_merge(
+            (array)$block->data,
+            $additionalData,
+            ['block' => $block]
+        );
 
         return view('constructor.blocks.' . $viewName, $data);
     }
