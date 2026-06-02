@@ -76,11 +76,12 @@ return [
 Then add this field to your form
 ```php
 use CubeAgency\FilamentConstructor\Filament\Forms\Components\Constructor;
+use Filament\Schemas\Schema;
 
-public static function form(Form $form): Form
+public static function form(Schema $schema): Schema
 {
-    return $form
-        ->schema([
+    return $schema
+        ->components([
             // ...
             Constructor::make('blocks'),
             // ...
@@ -104,11 +105,12 @@ return [
 
 ```php
 use CubeAgency\FilamentConstructor\Filament\Forms\Components\Constructor;
+use Filament\Schemas\Schema;
 
-public static function form(Form $form): Form
+public static function form(Schema $schema): Schema
 {
-    return $form
-        ->schema([
+    return $schema
+        ->components([
             // ...
             Constructor::make('blocks')->use(config('filament-constructor.image_blocks')),
             // ...
