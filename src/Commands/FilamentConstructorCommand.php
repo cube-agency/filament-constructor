@@ -19,27 +19,27 @@ class FilamentConstructorCommand extends Command
     {
         $name = $this->argument('name') ?? $this->ask('Name (e.g. `Custom`)', 'name');
 
-        $block = (string)Str::of($name)
+        $block = (string) Str::of($name)
             ->trim('/')
             ->trim('\\')
             ->trim(' ')
             ->replace('/', '\\')
             ->append('Block');
-        $blockClass = (string)Str::of($block)->afterLast('\\');
+        $blockClass = (string) Str::of($block)->afterLast('\\');
         $blockNamespace = Str::of($block)->contains('\\') ?
-            (string)Str::of($block)->beforeLast('\\') :
+            (string) Str::of($block)->beforeLast('\\') :
             '';
 
         $path = app_path(
-            (string)Str::of($block)
+            (string) Str::of($block)
                 ->prepend('Filament\\Constructor\\Blocks\\')
                 ->replace('\\', '/')
                 ->append('.php'),
         );
 
-        if (!$this->option('force') && $this->checkForCollision([
-                $path,
-            ])) {
+        if (! $this->option('force') && $this->checkForCollision([
+            $path,
+        ])) {
             return static::INVALID;
         }
 
@@ -59,7 +59,7 @@ class FilamentConstructorCommand extends Command
     {
         $filesystem = app(Filesystem::class);
 
-        if (!$this->fileExists($stubPath = base_path("stubs/{$stub}.stub"))) {
+        if (! $this->fileExists($stubPath = base_path("stubs/{$stub}.stub"))) {
             $stubPath = __DIR__ . "/../../stubs/{$stub}.stub";
         }
 
@@ -69,7 +69,7 @@ class FilamentConstructorCommand extends Command
             $stub = $stub->replace("{{ {$key} }}", $replacement);
         }
 
-        $stub = (string)$stub;
+        $stub = (string) $stub;
 
         $this->writeFile($targetPath, $stub);
     }
