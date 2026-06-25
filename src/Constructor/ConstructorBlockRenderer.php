@@ -7,9 +7,7 @@ use Illuminate\Support\Arr;
 
 class ConstructorBlockRenderer
 {
-    public function __construct(protected array $blocks = [])
-    {
-    }
+    public function __construct(protected array $blocks = []) {}
 
     public function render(?array $blocks = []): string
     {

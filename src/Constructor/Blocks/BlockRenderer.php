@@ -11,7 +11,7 @@ abstract class BlockRenderer implements BlockRendererInterface
     {
         $viewName = Str::kebab(Str::studly($this->name()));
         $data = array_merge(
-            (array)$block->data,
+            (array) $block->data,
             $additionalData,
             ['block' => $block]
         );
