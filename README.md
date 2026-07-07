@@ -157,6 +157,27 @@ To add Builder options to the constructor, add them when defining the constructo
     ->collapsed()
 ```
 
+## Block settings
+
+Every block automatically gets a collapsible **Block settings** section with two extra fields, so you can tell blocks apart at a glance:
+
+- `block_name` – a free-text name for the block. It is used as the block's label in the builder (falling back to the block `title()` when empty).
+- `block_anchor` – a URL slug, auto-generated as you type. Handy as an `id` for in-page anchor links.
+
+Both values are stored in the block's data and are available in the block view:
+
+```blade
+<section @if(!empty($block_anchor)) id="{{ $block_anchor }}" @endif>
+    {{-- ... --}}
+</section>
+```
+
+The field labels are translatable. Publish the translations to customise or localise them:
+
+```bash
+php artisan vendor:publish --tag="filament-constructor-translations"
+```
+
 ## Testing
 
 ```bash
