@@ -50,6 +50,30 @@ function blockFieldNames($component): array
     return $names;
 }
 
+/**
+ * Find a field by name anywhere within a component's schema.
+ */
+function findBlockField($component, string $name): ?Field
+{
+    $children = $component->getDefaultChildComponents();
+
+    if ($children instanceof Schema) {
+        $children = $children->getComponents();
+    }
+
+    foreach ($children as $child) {
+        if ($child instanceof Field && $child->getName() === $name) {
+            return $child;
+        }
+
+        if ($found = findBlockField($child, $name)) {
+            return $found;
+        }
+    }
+
+    return null;
+}
+
 it('is a filament builder', function () {
     config()->set('filament-constructor.blocks', ['test_block' => TestBlock::class]);
 
@@ -116,4 +140,31 @@ it('registers the block settings translations', function () {
     expect(__('filament-constructor::block-settings.title'))->toBe('Block settings')
         ->and(__('filament-constructor::block-settings.name'))->toBe('Name')
         ->and(__('filament-constructor::block-settings.anchor'))->toBe('Anchor');
+});
+
+it('adds the visibility fields to every block', function () {
+    config()->set('filament-constructor.blocks', ['test_block' => TestBlock::class]);
+
+    $block = constructorBlocks(Constructor::make('content'))[0];
+
+    expect(blockFieldNames($block))
+        ->toContain('is_active')
+        ->toContain('starts_at')
+        ->toContain('ends_at');
+});
+
+it('defaults is_active to true', function () {
+    config()->set('filament-constructor.blocks', ['test_block' => TestBlock::class]);
+
+    $block = constructorBlocks(Constructor::make('content'))[0];
+    $isActive = findBlockField($block, 'is_active');
+
+    expect($isActive)->not->toBeNull()
+        ->and($isActive->getDefaultState())->toBeTrue();
+});
+
+it('registers the visibility field translations', function () {
+    expect(__('filament-constructor::block-settings.is_active'))->toBe('Active')
+        ->and(__('filament-constructor::block-settings.starts_at'))->toBe('Starts at')
+        ->and(__('filament-constructor::block-settings.ends_at'))->toBe('Ends at');
 });

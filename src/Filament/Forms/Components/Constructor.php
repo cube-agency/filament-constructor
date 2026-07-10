@@ -4,6 +4,8 @@ namespace CubeAgency\FilamentConstructor\Filament\Forms\Components;
 
 use CubeAgency\FilamentConstructor\Constructor\Blocks\BlockRenderer;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -77,6 +79,9 @@ class Constructor extends Builder
     {
         return Section::make(__('filament-constructor::block-settings.title'))
             ->schema([
+                Checkbox::make('is_active')
+                    ->label(__('filament-constructor::block-settings.is_active'))
+                    ->default(true),
                 Grid::make()
                     ->schema([
                         TextInput::make('block_name')
@@ -87,6 +92,15 @@ class Constructor extends Builder
                             ->afterStateUpdated(fn (?string $state, Set $set) => $set('block_anchor', static::slugifyAnchor($state)))
                             ->dehydrateStateUsing(fn (?string $state) => static::slugifyAnchor($state))
                             ->rules(['regex:/^([a-z0-9]+(?:-[a-z0-9]+)*)?$/']),
+                    ]),
+                Grid::make()
+                    ->schema([
+                        DateTimePicker::make('starts_at')
+                            ->label(__('filament-constructor::block-settings.starts_at'))
+                            ->before('ends_at'),
+                        DateTimePicker::make('ends_at')
+                            ->label(__('filament-constructor::block-settings.ends_at'))
+                            ->after('starts_at'),
                     ]),
             ])
             ->collapsible()
