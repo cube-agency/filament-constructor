@@ -4,6 +4,13 @@ namespace CubeAgency\FilamentConstructor\Filament\Forms\Components;
 
 use CubeAgency\FilamentConstructor\Constructor\Blocks\BlockRenderer;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
+use Illuminate\Support\Str;
 
 class Constructor extends Builder
 {
@@ -23,6 +30,11 @@ class Constructor extends Builder
         return $this;
     }
 
+    public static function slugifyAnchor(?string $state): ?string
+    {
+        return filled($state) ? Str::slug($state) : null;
+    }
+
     protected function setBlocks(array $blocks): void
     {
         $blockFields = [];
@@ -33,8 +45,13 @@ class Constructor extends Builder
              */
             $blockRenderer = resolve($block);
             $block = Builder\Block::make($blockRenderer->name())
-                ->label($blockRenderer->title())
-                ->schema($blockRenderer->schema());
+                ->label(fn (?array $state): string => filled($state['block_name'] ?? null)
+                    ? $state['block_name']
+                    : $blockRenderer->title())
+                ->schema([
+                    ...$blockRenderer->schema(),
+                    $this->blockSettingsSection(),
+                ]);
 
             $icon = $blockRenderer->icon();
             if ($icon) {
@@ -56,5 +73,37 @@ class Constructor extends Builder
 
         $this->blocks($blockFields);
         $this->blockIcons();
+    }
+
+    protected function blockSettingsSection(): Section
+    {
+        return Section::make(__('filament-constructor::block-settings.title'))
+            ->schema([
+                Checkbox::make('is_active')
+                    ->label(__('filament-constructor::block-settings.is_active'))
+                    ->default(true),
+                Grid::make()
+                    ->schema([
+                        TextInput::make('block_name')
+                            ->label(__('filament-constructor::block-settings.name')),
+                        TextInput::make('block_anchor')
+                            ->label(__('filament-constructor::block-settings.anchor'))
+                            ->live(debounce: 500)
+                            ->afterStateUpdated(fn (?string $state, Set $set) => $set('block_anchor', static::slugifyAnchor($state)))
+                            ->dehydrateStateUsing(fn (?string $state) => static::slugifyAnchor($state))
+                            ->rules(['regex:/^([a-z0-9]+(?:-[a-z0-9]+)*)?$/']),
+                    ]),
+                Grid::make()
+                    ->schema([
+                        DateTimePicker::make('starts_at')
+                            ->label(__('filament-constructor::block-settings.starts_at'))
+                            ->before('ends_at'),
+                        DateTimePicker::make('ends_at')
+                            ->label(__('filament-constructor::block-settings.ends_at'))
+                            ->after('starts_at'),
+                    ]),
+            ])
+            ->collapsible()
+            ->collapsed();
     }
 }

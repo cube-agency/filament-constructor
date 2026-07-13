@@ -157,6 +157,31 @@ To add Builder options to the constructor, add them when defining the constructo
     ->collapsed()
 ```
 
+## Block settings
+
+Every block automatically gets a collapsible **Block settings** section with extra fields, so you can label, anchor, and control the visibility of each block:
+
+- `block_name` – a free-text name for the block. It is used as the block's label in the builder (falling back to the block `title()` when empty).
+- `block_anchor` – a URL slug, auto-generated as you type. Handy as an `id` for in-page anchor links.
+- `is_active` – a checkbox, checked by default. When unchecked the block is not rendered.
+- `starts_at` / `ends_at` – optional datetimes. The block is only rendered while the current time is within the window (both bounds inclusive). Leave either empty for an open-ended schedule.
+
+`ConstructorBlockRenderer` skips any block that is inactive or outside its `starts_at`/`ends_at` window, so no extra checks are needed in your views. Blocks saved before these fields existed have no `is_active` value and remain visible.
+
+All values are stored in the block's data and are also available in the block view:
+
+```blade
+<section @if(!empty($block_anchor)) id="{{ $block_anchor }}" @endif>
+    {{-- ... --}}
+</section>
+```
+
+The field labels are translatable. Publish the translations to customise or localise them:
+
+```bash
+php artisan vendor:publish --tag="filament-constructor-translations"
+```
+
 ## Testing
 
 ```bash
